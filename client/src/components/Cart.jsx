@@ -154,17 +154,19 @@ const Cart = ({closeCart}) => {
           <input name='name' type='text' value={order.name} placeholder='Name (required)' onChange={(e)=>handleChange(e)}/>
           <input name='telephoneNum'type='tel' value={order.telephoneNum} placeholder='Phone Number (required)' onChange={(e)=>handleChange(e)}/>
           <textarea name='specialInstructions' type='text' value={order.specialInstructions} placeholder='Add special instructions here...' onChange={(e)=>handleChange(e)} rows={3}/>
-          <Select 
-            isSearchable={false}
-            placeholder='Please select a pickup time (required) ...'
-            value={order.pickUpTime === '' ? '' : {
-              value: order.pickUpTime,
-              label: (order.pickUpTime.slice(0, 2) % 12).toString().concat(':', order.pickUpTime.slice(2,4), order.pickUpTime.slice(0, 2) > 12 ? ' PM' : ' AM')
-            }}
-            options={pickupTimes} 
-            noOptionsMessage={() => 'Sorry, no pickup times available right now'}
-            onChange={(e) => handlePickupTimeChange(e)}
-          />
+          <div className='pickuptime-select'>
+            <Select 
+              isSearchable={false}
+              placeholder='Please select a pickup time (required) ...'
+              value={order.pickUpTime === '' ? '' : {
+                value: order.pickUpTime,
+                label: (order.pickUpTime.slice(0, 2) % 12).toString().concat(':', order.pickUpTime.slice(2,4), order.pickUpTime.slice(0, 2) > 12 ? ' PM' : ' AM')
+              }}
+              options={pickupTimes} 
+              noOptionsMessage={() => 'Sorry, no pickup times available right now'}
+              onChange={(e) => handlePickupTimeChange(e)}
+            />
+          </div>
           <div className='utensils-container'>
             <label>
               Utensils
@@ -187,7 +189,7 @@ const Cart = ({closeCart}) => {
             </AnimatePresence>
           </div>
         </div>
-        <div>
+        <div className='cart-items-container'>
           <div className='cart-items-header'>
             Your Items :
           </div>

@@ -29,7 +29,7 @@
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
   background: white;
   position: absolute;
   height: 100vh;
@@ -39,9 +39,10 @@
 .burger{
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   padding: 1rem 0rem;
+  padding-left: 1.5rem;
 }
 
 .burger.selected{
@@ -224,9 +225,9 @@
 
 .cart{
   background-color: #fff;
-  width: clamp(500px, 600px, 100%);
-  height: 100%;
-  padding: 2rem 2rem;
+  width: clamp(500px, 600px, 100vw);
+  height: 100vh;
+  padding: 2rem;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -242,17 +243,19 @@
 .cart .cart-input{
   display: flex;
   flex-flow: column;
+  align-items: center;
   padding: 1rem 0rem;
   gap: 1rem;
+  width: 100%;
 }
 
 .cart-input textarea,
 .cart-input input{
   padding: 0.5rem 1rem;
-  width: 400px;
   border-radius: 5px;
   font-size: 1rem;
   border-color: grey;
+  width: 100%;
 }
 
 .cart-input textarea{
@@ -260,13 +263,19 @@
   font-family: inherit;
 }
 
-.cart-input textarea:active,
+.cart-input .pickuptime-select{
+  width: 100%;
+}
+
+/* .cart-input textarea:active,
 .cart-input input:active,
 .cart-input textarea:focus,
 .cart-input input:focus{
   outline: 1px solid grey;
-}
+} */
+
 .utensils-container{
+  align-self: flex-start;
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -283,18 +292,24 @@
   width: 75px;
   height: 24px;
 }
+.cart-items-container{
+  position: relative;
+  width: 100%;
+}
 
 .cart-items-header{
+  width: 100%;
   font-weight: 800;
   text-decoration: underline;
-  padding: 0.5rem 1.5rem;
   padding-top: 2rem;
 }
 
 .cart-items{
+  width: 100%;
   display: flex;
+  align-self: center;
   flex-flow: column nowrap;
-  width: 500px;
+  /* why flex start my dawg? */
   align-items: flex-start;
   gap: 3rem;
   border-bottom: 2px solid lightgrey;
@@ -341,7 +356,7 @@
 .cart-prices{
   display: flex;
   flex-flow: column nowrap;
-  width: 500px;
+  width: 100%;
   padding: 0 1.5rem;
 }
 
@@ -663,15 +678,16 @@
 
 .cart .cart-input{
   display: flex;
+  width: 100%;
+  padding: 1rem 2rem;
   flex-flow: column;
-  padding: 1rem 0rem;
   gap: 1rem;
 }
 
 .cart-input textarea,
 .cart-input input{
   padding: 0.5rem 1rem;
-  width: 400px;
+  width: 100%;
   border-radius: 5px;
   font-size: 1rem;
   border-color: grey;

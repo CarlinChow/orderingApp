@@ -24,6 +24,7 @@ const HamburgerMenu = ({categories, setCategory, category}) => {
           <AnimatePresence exitBeforeEnter>
             {!isOpen && (
                 <motion.div
+                  whileTap={{scale: 0.9}}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0}}
@@ -35,6 +36,7 @@ const HamburgerMenu = ({categories, setCategory, category}) => {
             )}
             {isOpen && (
                 <motion.div
+                  whileTap={{scale: 0.9}}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0}}
@@ -63,7 +65,7 @@ const HamburgerMenu = ({categories, setCategory, category}) => {
                   className={`burger ${category === menuItem ? 'selected' : ''}`}
                   onClick={(e)=>handleOnClick(e, menuItem)}
                   whileTap={{
-                    scale: 0.9,
+                    // scale: 0.9,
                     backgroundColor: '#D3D3D3',
                   }}
                 >
