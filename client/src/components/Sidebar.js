@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../features/auth/authSlice'
 import Button from './Button'
+import { toast } from 'react-toastify'
 
 
 const Sidebar = () => {
@@ -12,7 +13,8 @@ const Sidebar = () => {
   const handleLogout = (event) => {
     event.preventDefault()
     dispatch(logout())
-    navigate('/admin/login')
+    toast.info('You have logged out.')
+    navigate('/login')
   }
 
   return (

@@ -1,7 +1,9 @@
 import Button from './Button'
 import Toggle from 'react-toggle'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { usePostFoodMutation } from '../features/api'
+import { toast } from 'react-toastify'
+import { GiTargetPoster } from 'react-icons/gi'
 
 const AddFoodForm = () => {
   const initialFoodItemState ={
@@ -17,6 +19,17 @@ const AddFoodForm = () => {
   const [ postFood, results ] = usePostFoodMutation()
   const [ newFoodItem, setNewFoodItem ] = useState(initialFoodItemState)
 
+  useEffect(()=>{
+    if(results.isSuccess){
+      toast.success('Food Item has been added successfully!')
+      results.reset()
+    }
+    if(results.isError){
+      toast.error(`An Error occured: ${results.error.message}`)
+      results.reset()
+    }
+  },[results])
+
   const onChangeForm = (event) => {
     event.preventDefault()
     const name = event.target.name
@@ -27,13 +40,13 @@ const AddFoodForm = () => {
     })
   }
 
-  const handleSubmit = async(event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
     if(!newFoodItem.name || !newFoodItem.price_md){
-      alert('Please fill in all fields')
+      toast.warn('Please fill in all fields')
       return
     }
-    await postFood(newFoodItem)
+    postFood(newFoodItem)
     setNewFoodItem(initialFoodItemState)
   }
   

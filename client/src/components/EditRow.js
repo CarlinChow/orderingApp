@@ -1,7 +1,8 @@
 import Toggle from 'react-toggle'
 import Button from './Button'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useUpdateFoodMutation, useDeleteFoodMutation } from '../features/api'
+import { toast } from 'react-toastify'
 
 const EditRow = ({foodItem, index, setEditRowObjectID}) => {
   const initialFoodItem = {
@@ -14,20 +15,41 @@ const EditRow = ({foodItem, index, setEditRowObjectID}) => {
     availability: foodItem.availability,
   }
 
-  const [ updateFood ] = useUpdateFoodMutation()
-  const [ deleteFood ] = useDeleteFoodMutation()
+  const [ updateFood, updateResults ] = useUpdateFoodMutation()
+  const [ deleteFood, deleteResults ] = useDeleteFoodMutation()
   const [ editedFoodItem, setEditedFoodItem ] = useState({...foodItem})
 
-  const saveHandler = (event) => {
+  useEffect(()=> {
+    if(updateResults.isSuccess){
+      console.log('hello im here')
+      toast.success('Item has been updated!')
+      updateResults.reset()
+    }
+    if(updateResults.isError){
+      toast.error(`An error has occured: ${updateResults.error.message}`)
+      updateResults.reset()
+    }
+    if(deleteResults.isSuccess){
+      toast.success('Item has been deleted!')
+      deleteResults.reset()
+    }
+    if(deleteResults.isError){
+      toast.error(`An error has occured: ${updateResults.error.message}`)
+      deleteResults.reset()
+    }
+  },[updateResults, deleteResults])
+
+  const saveHandler = async (event) => {
     event.preventDefault()
-    updateFood(editedFoodItem)
+    await updateFood(editedFoodItem)
     setEditedFoodItem(initialFoodItem)
-    setEditRowObjectID('')
+    setEditRowObjectID(null)
   }
 
-  const deleteHandler = (event) => {
+  const deleteHandler = async (event) => {
     event.preventDefault()
-    deleteFood(foodItem._id)
+    await deleteFood(foodItem._id)
+    setEditRowObjectID(null)
   }
 
   const onChangeFoodItem = (event) => {

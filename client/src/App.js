@@ -9,6 +9,9 @@ import CustomerOrderPage from './pages/CustomerOrderPage'
 import PickupTimesPage from './pages/PickupTimesPage'
 import AdminContainer from './components/AdminContainer'
 
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 function App() {
   return (
@@ -24,6 +27,13 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      <ToastContainer
+        theme={"colored"}
+        autoClose={5000}
+        closeOnClick
+        draggable
+        pauseOnHover 
+      />
     </div>
   );
 }

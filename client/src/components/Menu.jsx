@@ -6,8 +6,6 @@ import MenuItemModal from './MenuItemModal'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMediaQuery } from 'react-responsive'
 import HamburgerMenu from './HamburgerMenu'
-import { GiHamburgerMenu } from 'react-icons/gi'
-import Backdrop from './Backdrop'
  
 const Menu = () => {
   const categories = [
@@ -24,7 +22,7 @@ const Menu = () => {
   const [ category, setCategory ] = useState('Kitchen Suggestions')
   const [ showItemModalObjId, setShowItemModalObjId ] = useState(null)
   const [ isOpen, setIsOpen ] = useState(false)
-  const isMobile = useMediaQuery({ maxWidth: 768})
+  const isMobile = useMediaQuery({ maxWidth: 992})
 
   useEffect(() => {
     // refetches every 3 mins
@@ -69,7 +67,6 @@ const Menu = () => {
             .map((filteredMenuItem, index) => (
               <Fragment key={index}> 
                 <MenuItemCard 
-                  key={index} 
                   menuItem={filteredMenuItem}
                   showItemModalObjId={showItemModalObjId}
                   setShowItemModalObjId={setShowItemModalObjId} 
@@ -77,7 +74,6 @@ const Menu = () => {
                 <AnimatePresence key={index}>
                   {showItemModalObjId === filteredMenuItem._id && 
                     <MenuItemModal
-                      key={index} 
                       menuItem={filteredMenuItem} 
                       closeModal={()=>setShowItemModalObjId(null)} 
                     />

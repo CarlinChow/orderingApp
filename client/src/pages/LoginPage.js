@@ -6,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { login, logout } from '../features/auth/authSlice'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { BiLogIn } from 'react-icons/bi'
+import { toast } from 'react-toastify'
 
 const LoginPage = () => {
   const dispatch = useDispatch()
@@ -27,6 +28,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if(registerResult.data && registerResult.data.token){
+      toast.success('User Created, logging in...')
       dispatch(login(registerResult.data))
       setForm({
         name: '',
@@ -35,12 +37,13 @@ const LoginPage = () => {
       navigate('/admin/orders')
     }
     if(registerResult.isError) {
-      console.log(registerResult.error.status)
+      toast.error('An error occured while registering')
     }
   }, [registerResult.data, registerResult.isError, dispatch, navigate])
 
   useEffect(() => {
     if(loginResult.data && loginResult.data.token){
+      toast.success("You have successfully logged in!")
       dispatch(login(loginResult.data))
       setForm({
         name: '',
@@ -49,7 +52,7 @@ const LoginPage = () => {
       navigate('/admin/orders')
     }
     if(loginResult.isError) {
-      console.log(loginResult.error.status)
+      toast.error('invalid credentials')
     }
   }, [loginResult.data, loginResult.isError, dispatch, navigate])
 
@@ -65,7 +68,7 @@ const LoginPage = () => {
   const handleRegisterUser = async(event) => {
     event.preventDefault()
     if(!form.name || !form.password){
-      alert('Please enter all fields!')
+      toast.warn('Please enter all fields!')
       return
     }
     await registerUser({
@@ -77,7 +80,7 @@ const LoginPage = () => {
   const handleLoginUser = async(event) => {
     event.preventDefault()
     if(!form.name || !form.password){
-      alert('Please enter all fields!')
+      toast.warn('Please enter all fields!')
       return
     }
     await loginUser({

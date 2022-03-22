@@ -11,6 +11,7 @@ import Toggle from 'react-toggle'
 import { IoIosArrowBack } from 'react-icons/io'
 import Backdrop from './Backdrop'
 import { motion, AnimatePresence } from 'framer-motion'
+import { toast } from 'react-toastify'
 
 const Cart = ({closeCart}) => {
   const dispatch = useDispatch()
@@ -25,12 +26,48 @@ const Cart = ({closeCart}) => {
       value: item,
       label: item.time
     }
-  }) : null)
+  }) : [])
+
+  const selectStyle = {
+    option: (styles, {data, isFocused, isSelected}) => ({
+      ...styles,
+      backgroundColor: isSelected ? '#F8F8FF' : data.color,
+      color: 'black',
+      "&:active": {
+        backgroundColor: '#DCDCDC'
+      }
+    }),
+    control: (styles, {data, isFocused, isSelected}) => ({
+      ...styles,
+      boxShadow: 0,
+      borderColor: isFocused ? 'grey' : 'lightgrey',
+      "&:hover": {
+        borderColor: 'none'
+      }
+    })
+  }
 
   useEffect(() => {
-    // refetches time slots every 5 mins
-    setInterval(refetch, 300000)
+    // refetches time slots every 3 mins
+    setInterval(refetch, 180000)
   }, [])
+
+  useEffect(() => {
+    if(results.isSuccess){
+      toast.success('Your order has been successfully placed!')
+      results.reset()
+      dispatch(clearOrder())
+      setUtensils(false)
+      closeCart()
+      navigate('/')
+      return
+    }
+    if(results.isError){
+      toast.error("An error has occured, please try again.")
+      results.reset()
+      return
+    }
+  }, [results])
 
   useEffect(() => {
     setPickupTimes( data ?
@@ -91,28 +128,28 @@ const Cart = ({closeCart}) => {
     }
   }
 
-  const handleSubmitOrder = async (event) => {
+  const handleSubmitOrder = (event) => {
     event.preventDefault()
-    if(!order.name || !order.telephoneNum || !order.pickUpTime || order.foodOrderArr.length < 1){
-      alert('Please fill in all required fields before submitting order!')
+    if(order.foodOrderArr.length < 1){
+      toast.error('Please add some items to the cart!')
+      return
+    }
+    if(!order.name || !order.telephoneNum){
+      toast.error('Please fill in all required fields!')
       return
     }
 
-    await postOrder({
+    if(!order.pickUpTime){
+      toast.error('Please select a pick up time!')
+      return
+    }
+    
+    postOrder({
       ...order,
       utensils: !utensils ? 0 : order.utensils,
       status: 'pending',  
       complete: false,
     })
-
-    if(results.isError){
-      alert(`An Error Occured: ${results.error.message}`)
-      return
-    }
-    dispatch(clearOrder())
-    setUtensils(false)
-    closeCart()
-    navigate('/')
   }
 
   const computeSizeToString = (size) => {
@@ -165,6 +202,7 @@ const Cart = ({closeCart}) => {
               options={pickupTimes} 
               noOptionsMessage={() => 'Sorry, no pickup times available right now'}
               onChange={(e) => handlePickupTimeChange(e)}
+              styles={selectStyle}
             />
           </div>
           <div className='utensils-container'>

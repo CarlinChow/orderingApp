@@ -1,17 +1,66 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { addToOrder } from '../features/orderSlice'
-import { IoChevronBackSharp, IoClose } from 'react-icons/io5'
+import { IoClose } from 'react-icons/io5'
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
 import Select from 'react-select'
-import Button from './Button'
 import { motion } from 'framer-motion'
 import Backdrop  from './Backdrop'
+import { useMediaQuery } from 'react-responsive'
+import { toast } from 'react-toastify'
 
 const MenuItemModal = ({menuItem, closeModal}) => {
-  const variants = {
-    
+
+  const selectStyle = {
+    option: (styles, {data, isFocused, isSelected}) => ({
+      ...styles,
+      backgroundColor: isSelected ? '#F8F8FF' : data.color,
+      color: 'black',
+      "&:active": {
+        backgroundColor: '#DCDCDC'
+      }
+    }),
+    control: (styles, {data, isFocused, isSelected}) => ({
+      ...styles,
+      boxShadow: 0,
+      borderColor: isFocused ? 'grey' : 'lightgrey',
+      "&:hover": {
+        borderColor: 'none'
+      }
+    })
   }
+  
+  const mobileVariants = {
+    visible: { 
+      y: 0,
+      transition: {
+        type: 'inhertia',
+        duration: 0.5,
+      },
+     },
+    hidden: { y: '100vh'},
+    exit: { y: '100vh'},
+  }
+
+  const desktopVariants = {
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        duration: 0.5,
+      }
+    },
+    hidden: {
+      y: '100vh',
+      opacity: 0,
+    },
+    exit: {
+      y: '-100vh',
+      opacity: 0,
+    },
+  }
+  const isMobile = useMediaQuery({maxWidth: 768})
   const dispatch = useDispatch()
   const sizeOptions = [
     {label: 'Large', value: menuItem.price_lg, id: 2},
@@ -76,44 +125,39 @@ const MenuItemModal = ({menuItem, closeModal}) => {
     event.preventDefault()
     dispatch(addToOrder(foodOrder))
     closeMenuItemModal(event)
+    toast.info("Item has been added to your cart.", {
+       theme: "colored",
+       autoClose: 1500,
+       hideProgressBar: true,
+      })
   }
 
 
   return (
     <Backdrop 
       onClick={closeModal} 
-      addClass='center'
+      addClass={isMobile ? 'bottom' : 'center'}
     >
       <motion.div 
         className='menu-item-modal-content'
         onClick={(e) => e.stopPropagation()}
-        initial={{
-          // scale: 0,
-          y: '100vh',
-          opacity: 0,
-        }}
-        animate={{
-          // scale: 1,
-          y: 0,
-          opacity: 1,
-        }}
-        exit={{
-          // scale: 0,
-          y: '-100vh',
-          opacity: 0,
-        }}
+        variants={isMobile ? mobileVariants : desktopVariants}
+        initial={'hidden'}
+        animate={'visible'}
+        exit={'exit'}
       >
           <div className='menu-item-modal-header'>
-            <IoChevronBackSharp className='icon-btn' fontSize='1.5rem' onClick={closeModal}/>
             <IoClose className='icon-btn' fontSize='1.7rem' onClick={closeModal} />
           </div>
           <div className='menu-item-modal-body'>
-            <div className='name'>{menuItem.name}</div>
-            {menuItem.desc && 
-              <div className='desc'>
-                {`~${menuItem.desc}`}
-              </div>
-            }
+            <div className='menu-item-modal-body-name-desc'>
+              <div className='name'>{menuItem.name}</div>
+              {menuItem.desc && 
+                <div className='desc'>
+                  {`~${menuItem.desc}`}
+                </div>
+              }
+            </div>
             <textarea 
               type='text' 
               value={foodOrder.note} 
@@ -122,11 +166,14 @@ const MenuItemModal = ({menuItem, closeModal}) => {
               rows={3}
             />
             {menuItem.price_lg && 
-              <Select
-                value={size}
-                onChange={setSize}
-                options={sizeOptions}
-              />
+              <div className='size-select'>
+                <Select
+                  value={size}
+                  onChange={setSize}
+                  options={sizeOptions}
+                  styles={selectStyle}
+                />
+              </div>
             }
           </div>
           <div className='menu-item-modal-footer'>
@@ -134,15 +181,18 @@ const MenuItemModal = ({menuItem, closeModal}) => {
               className='quantity-container'
               whileTap={{scale: 0.9}}
             >
-              <div className='quantity-btn' onClick={()=>setFoodOrder(prev => {
-                if(prev.quantity === 1){
-                  return prev
-                }
-                return{
-                  ...prev,
-                  quantity: prev.quantity - 1
-                }
-              })}> 
+              <div 
+                className='quantity-btn' 
+                onClick={()=>setFoodOrder(prev => {
+                  if(prev.quantity === 1){
+                    return prev
+                  }
+                  return{
+                    ...prev,
+                    quantity: prev.quantity - 1
+                  }
+                })}
+              > 
                 <AiOutlineMinus />
               </div>
               <div className='quantity'> 
@@ -162,8 +212,20 @@ const MenuItemModal = ({menuItem, closeModal}) => {
             </div>
           </div>
           <div className='menu-item-modal-btns'>
-            <Button text='Add' color='steelblue' onClick={(e)=>handleAddtoOrder(e)}/>
-            <Button text='Cancel' color='grey' onClick={closeMenuItemModal}/>
+            <motion.button 
+              onClick={(e)=>handleAddtoOrder(e)}
+              whileTap={{scale: 0.9}}
+              whileHover={{scale: 1.1}}
+            >
+              Add
+            </motion.button>
+            <motion.button 
+              onClick={closeMenuItemModal}
+              whileTap={{scale: 0.9}}
+              whileHover={{scale: 1.1}}
+            >
+              Cancel
+            </motion.button>
           </div>
       </motion.div>
     </Backdrop>

@@ -1,7 +1,8 @@
 import { usePostTimeSlotMutation } from "../features/api"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Toggle from 'react-toggle'
 import Button from './Button'
+import { toast } from 'react-toastify'
 
 const AddTimeSlotForm = () => {
   const initialTimeSlotState = {
@@ -13,6 +14,17 @@ const AddTimeSlotForm = () => {
   const [ postTimeSlot, results ] = usePostTimeSlotMutation()
   const [ newTimeSlot, setNewTimeSlot ] = useState(initialTimeSlotState)
   const formattedTime = newTimeSlot.time.slice(0, 2).concat(":", newTimeSlot.time.slice(2, 4))
+
+  useEffect(()=>{
+    if(results.isSuccess){
+      toast.success('TimeSlot has been added successfully!')
+      results.reset()
+    }
+    if(results.isError){
+      toast.error(`An Error occured: ${results.error.message}`)
+      results.reset()
+    }
+  },[results])
 
   const handleTimeChange = (event) => {
     event.preventDefault()
@@ -40,18 +52,13 @@ const AddTimeSlotForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     if(!newTimeSlot.time ||  !newTimeSlot.startingQuantity){
-      alert('please fill in all fields before submitting')
+      toast.warn('please fill in all fields before submitting')
       return
     }
     await postTimeSlot({
       ...newTimeSlot,
       currentQuantity: newTimeSlot.startingQuantity
     })
-
-    if(results.isError){
-      alert(`An Error Occured ${results.error.message}`)
-      return
-    }
     setNewTimeSlot(initialTimeSlotState)
   }
 

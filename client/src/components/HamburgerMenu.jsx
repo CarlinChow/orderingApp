@@ -65,7 +65,7 @@ const HamburgerMenu = ({categories, setCategory, category}) => {
                   className={`burger ${category === menuItem ? 'selected' : ''}`}
                   onClick={(e)=>handleOnClick(e, menuItem)}
                   whileTap={{
-                    // scale: 0.9,
+                    color: '#fff',
                     backgroundColor: '#D3D3D3',
                   }}
                 >

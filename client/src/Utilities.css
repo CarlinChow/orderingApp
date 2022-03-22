@@ -164,9 +164,14 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  z-index: 1;
+  z-index: 3;
+  overflow: hidden;
 }
 
 .backdrop.center{
   justify-content: center;
+}
+
+.backdrop.bottom{
+  align-items: flex-end;
 }

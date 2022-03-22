@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import Button from './Button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AiOutlineClose } from 'react-icons/ai'
+import { toast } from 'react-toastify'
 
 const DeleteDropdown = ({showDeleteItemIndex, index, setShowDeleteItemIndex}) => {
   const dispatch = useDispatch()
@@ -14,6 +15,11 @@ const DeleteDropdown = ({showDeleteItemIndex, index, setShowDeleteItemIndex}) =>
   const handleDelete = () => {
     setShowDeleteItemIndex(null)
     dispatch(deleteFoodItemByIndex(index))
+    toast.info('Item has been removed from your cart.', { 
+      theme: 'colored',
+      autoClose: 1500,
+      hideProgressBar: true,
+      })
   }
 
   return (

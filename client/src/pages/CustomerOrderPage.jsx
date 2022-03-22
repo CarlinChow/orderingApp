@@ -8,7 +8,7 @@ import { useMediaQuery } from 'react-responsive'
 
 const CustomerOrderPage = () => {
   const [ showCart, setShowCart ] = useState(false)
-  const isMobile = useMediaQuery({maxWidth: 768})
+  const isMobile = useMediaQuery({maxWidth: 992})
 
   return (
     <div className='customer-page'>
@@ -22,10 +22,10 @@ const CustomerOrderPage = () => {
         <motion.button 
           className='show-cart-btn'
           onClick={()=>setShowCart(true)}
-          whileHover={{ 
+          whileHover={!isMobile ? { 
             backgroundColor: '#808080',
             color: '#FFFFFF',
-          }}
+          }: null }
           whileTap={{ scale: 0.8 }}
         >
           Show Cart

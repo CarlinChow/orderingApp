@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react'
+import { toast } from 'react-toastify'
 import { useGetOrdersQuery, useGetTimeSlotsQuery, useUpdateTimeSlotMutation } from '../features/api'
 
 export const OrdersContext = React.createContext()
@@ -23,11 +24,18 @@ const AdminContext = ({children}) => {
     setInterval(ordersQuery.refetch, 60000)
   },[])
 
+  useEffect(()=>{
+    if(ordersQuery.isSuccess){
+      toast.success('Orders successfully fetched', {autoclose: 1500, hideProgressBar: true})
+    }
+    if(ordersQuery.isError){
+      toast.error('Orders were not fetched', {autoclose: 1500, hideProgressBar: true})
+    }
+  },[ordersQuery])
+
   // on ordersquery refetches, calculate the current available time slots
   useEffect(()=> {
-    console.log('in effect')
     if(timeSlotsQuery.data && ordersQuery.data){
-      console.log('in conditional')
       const time = new Date()
       time.setMinutes(time.getMinutes() + 30)
       const timeString = time.toLocaleTimeString('en-US', {hour12: false})
@@ -39,7 +47,6 @@ const AdminContext = ({children}) => {
             ...activeTimeslot,
             currentQuantity: activeTimeslot.startingQuantity
           }
-          console.log(`comparing ${updatedTimeslot.time} to ${formatTime}`)
           if(updatedTimeslot.time <= formatTime){
             updatedTimeslot.active = false
           }
