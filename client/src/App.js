@@ -10,7 +10,8 @@ import PickupTimesPage from './pages/PickupTimesPage'
 import AdminContainer from './components/AdminContainer'
 
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import RegisterUserPage from './pages/RegisterUserPage';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path='orders' element={<OrdersPage />}/>
             <Route path='pickuptimes' element={<PickupTimesPage />}/>
             <Route path='foods' element={<FoodsPage />}/>
+            <Route path='register' element={<RegisterUserPage />}/>
           </Route>
         </Routes>
       </Router>

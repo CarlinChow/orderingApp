@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
+import { useMediaQuery } from 'react-responsive'
 
 const MenuItemCard = ({menuItem, setShowItemModalObjId}) => {
-
+  const isMobile = useMediaQuery({ maxWidth: 992 })
   if(!menuItem.availability){
     return(
       <div className='menu-item-card unavailable'>
@@ -21,7 +22,7 @@ const MenuItemCard = ({menuItem, setShowItemModalObjId}) => {
     <motion.div 
       className='menu-item-card' 
       onClick={()=>setShowItemModalObjId(menuItem._id)}
-      whileHover={{scale: 1.1}}
+      whileHover={!isMobile ? {scale: 1.1} : null}
       whileTap={{scale: 0.9}}
     >
       <div className='menu-item-card-header'> 

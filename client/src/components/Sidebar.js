@@ -17,6 +17,11 @@ const Sidebar = () => {
     navigate('/login')
   }
 
+  const handleRegisterUser = (event) => {
+    event.preventDefault()
+    navigate('/admin/register')
+  }
+
   return (
 
     <div className='sidebar'>
@@ -29,7 +34,8 @@ const Sidebar = () => {
         <Link className='sidebar-link' to="/admin/pickuptimes">Pickup Times</Link>
       </div>
       <div className='sidebar-footer'> 
-        <Button text='logout' color='grey' onClick={(e)=>handleLogout(e)}/>
+        <Button text="Register a User" color='grey' onClick={(e)=>handleRegisterUser(e)}/>
+        <Button text='Logout' color='grey' onClick={(e)=>handleLogout(e)}/>
       </div>
     </div>
   )
