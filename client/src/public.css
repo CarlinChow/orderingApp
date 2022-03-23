@@ -20,7 +20,8 @@
   justify-content: space-between;
   align-items: center;
   font-size: 2rem;
-  padding: 2rem;
+  padding: 2rem 2rem;
+  padding-top: 3rem;
   font-weight: 600;
   text-decoration: underline;
 }
@@ -83,7 +84,8 @@
   display: flex;
   background: white;
   justify-content: center;
-  padding: 2rem 0;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
 }
 
 .show-cart-btn{
@@ -129,7 +131,7 @@
 
 .menu-item-modal-content{
   padding: 1rem;
-  width: clamp(600px, 700px, 100vw);
+  width: 100vw;
   min-height: 20vh;
   max-height: 100vh;
   display: flex;

@@ -10,7 +10,7 @@ const {
 const { protect } = require('../middleware/authMiddleware')
 
 /// @route: /api/orders
-router.route('/').get(protect, getOrders).post(protect, postOrder)
+router.route('/').get(protect, getOrders).post(postOrder)
 
 //  @route: /api/orders/:id
 router.route('/:id').get(protect, getOrderById).put(protect, updateOrder).delete(protect, deleteOrder)
