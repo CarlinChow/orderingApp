@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { GrClose } from 'react-icons/gr'
+import { BiSearch } from 'react-icons/bi' 
 import { motion, AnimatePresence } from 'framer-motion'
 
-const HamburgerMenu = ({categories, setCategory, category}) => {
+const HamburgerMenu = ({categories, setCategory, category, toggleSearchBar}) => {
   const [ isOpen, setIsOpen ] = useState(false)
 
   const variants ={
@@ -21,32 +22,39 @@ const HamburgerMenu = ({categories, setCategory, category}) => {
       <div className='mobile-header'>
         <div className='mobile-menu-header'>
           <div>Phnom Penh</div>
-          <AnimatePresence exitBeforeEnter>
-            {!isOpen && (
-                <motion.div
-                  whileTap={{scale: 0.9}}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0}}
-                  transition={{ duration: 0.2 }}
-                  key={1}
-                >
-                  <GiHamburgerMenu onClick={()=>setIsOpen(true)}/>
-                </motion.div>
-            )}
-            {isOpen && (
-                <motion.div
-                  whileTap={{scale: 0.9}}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0}}
-                  transition={{ duration: 0.2 }}
-                  key={2}
-                >
-                  <GrClose onClick={()=>setIsOpen(false)}/>
-                </motion.div>
-            )}
-          </AnimatePresence>
+          <div className='mobile-menu-btns'>
+            <motion.div
+              whileTap={{scale: 0.9}}
+            >
+              <BiSearch onClick={toggleSearchBar}/>
+            </motion.div>
+            <AnimatePresence exitBeforeEnter>
+              {!isOpen && (
+                  <motion.div
+                    whileTap={{scale: 0.9}}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0}}
+                    transition={{ duration: 0.2 }}
+                    key={1}
+                  >
+                    <GiHamburgerMenu onClick={()=>setIsOpen(true)}/>
+                  </motion.div>
+              )}
+              {isOpen && (
+                  <motion.div
+                    whileTap={{scale: 0.9}}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0}}
+                    transition={{ duration: 0.2 }}
+                    key={2}
+                  >
+                    <GrClose onClick={()=>setIsOpen(false)}/>
+                  </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
         <AnimatePresence>
           {isOpen &&

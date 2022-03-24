@@ -6,7 +6,8 @@ import MenuItemModal from './MenuItemModal'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMediaQuery } from 'react-responsive'
 import HamburgerMenu from './HamburgerMenu'
- 
+import SearchBar ,{ useFilterItems } from './SearchBar' 
+
 const Menu = () => {
   const categories = [
     'Kitchen Suggestions',
@@ -21,14 +22,23 @@ const Menu = () => {
   const { data, refetch, isError, error, isLoading } = useGetFoodsQuery()
   const [ category, setCategory ] = useState('Kitchen Suggestions')
   const [ showItemModalObjId, setShowItemModalObjId ] = useState(null)
-  const [ isOpen, setIsOpen ] = useState(false)
+  const [ searchQuery, setSearchQuery ] = useState('')
+  const [ openSearchBar, setOpenSearchBar] = useState(false)
+  const filteredSearchItems = useFilterItems(searchQuery, data)
   const isMobile = useMediaQuery({ maxWidth: 992})
 
   useEffect(() => {
     // refetches every 3 mins
     setInterval(refetch, 180000)
-  },[])
+  },[refetch])
   
+  const toggleSearchBar = () => {
+    setOpenSearchBar(!openSearchBar)
+    if(openSearchBar){
+      setSearchQuery('')
+    }
+  }
+
   return (
     <div className='menu'>
       {!isMobile && 
@@ -55,13 +65,44 @@ const Menu = () => {
           categories={categories}
           setCategory={setCategory}
           category={category}
+          toggleSearchBar={toggleSearchBar}
         />
       }
+      <AnimatePresence>
+        {(!isMobile || openSearchBar) &&
+          <SearchBar 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            items={data ? data : null}
+          />
+        }
+      </AnimatePresence>
       <div className='menu-items'>
         {isLoading 
         ? <LoadingSpinner />
         : isError 
         ? error.message
+        : (searchQuery && filteredSearchItems.length === 0)
+        ? <div>Sorry, no items were found.</div> 
+        : searchQuery
+        ? filteredSearchItems
+            .map((filteredMenuItem, index) => (
+              <Fragment key={index}> 
+                <MenuItemCard 
+                  menuItem={filteredMenuItem}
+                  showItemModalObjId={showItemModalObjId}
+                  setShowItemModalObjId={setShowItemModalObjId} 
+                />
+                <AnimatePresence key={index}>
+                  {showItemModalObjId === filteredMenuItem._id && 
+                    <MenuItemModal
+                      menuItem={filteredMenuItem} 
+                      closeModal={()=>setShowItemModalObjId(null)} 
+                    />
+                  }
+                </AnimatePresence>           
+              </Fragment>
+            )) 
         : data
             .filter((menuItem) => menuItem.category === category)
             .map((filteredMenuItem, index) => (
@@ -80,7 +121,7 @@ const Menu = () => {
                   }
                 </AnimatePresence>           
               </Fragment>
-          ))
+            ))
         }
       </div>
     </div>

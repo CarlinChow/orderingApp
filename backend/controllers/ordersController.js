@@ -1,5 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const Order = require('../models/orderModel')
+const TimeSlots = require('../models/timeSlotsModel')
+
 
 //  @desc: get orders from database
 //  @route: GET /api/orders
@@ -24,6 +26,17 @@ const postOrder = asyncHandler( async(req, res) => {
     throw new Error('Please fill in the required fields')
   }
   const newOrder = await Order.create(req.body)
+  const orderTime = await TimeSlots.findOne({ time: req.body.pickUpTime }) 
+  if(!orderTime){
+    res.status(400) // res.status is not a function
+    throw new Error('Time slot not found')
+  }
+  orderTime.currentQuantity = orderTime.currentQuantity - 1
+  if(orderTime.currentQuantity === 0 ){
+    orderTime.active = false
+  }
+
+  await TimeSlots.findByIdAndUpdate(orderTime._id, orderTime)
   res.status(200).json(newOrder)
 })
 

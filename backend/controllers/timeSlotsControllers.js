@@ -6,8 +6,20 @@ const asyncHandler = require('express-async-handler')
 //  @access: PUBLIC
 const getTimeSlots = asyncHandler( async (req , res) => {
   const timeSlots = await TimeSlots.find().sort({'time': 1})
-
-  res.status(200).json(timeSlots)
+  const time = new Date()
+  time.setMinutes(time.getMinutes() + 30)
+  const timeString = time.toLocaleTimeString('en-US', {hour12: false})
+  const formatTime = timeString.slice(0,2).concat(timeString.slice(3, 5))
+  timeSlots
+    .filter(timeslot => (timeslot.active === true))
+    .map( async(activeTimeslot) => {
+      if(activeTimeslot.time <= formatTime){
+        activeTimeslot.active = false
+        await TimeSlots.findByIdAndUpdate(activeTimeslot._id, activeTimeslot)
+      }
+    })
+  const updatedTimeslots = await TimeSlots.find().sort({'time': 1})
+  res.status(200).json(updatedTimeslots)
 })
 
 //  @desc: post a new timeslot to db 
