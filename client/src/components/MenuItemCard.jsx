@@ -9,11 +9,13 @@ const MenuItemCard = ({menuItem, setShowItemModalObjId}) => {
         <div className='menu-item-card-header'> 
           {menuItem.name}
         </div>
-        <div className='menu-item-card-body'> 
-          {menuItem.desc && <p>{menuItem.desc}</p>}
-        </div>
+        {menuItem.desc &&
+          <div className='menu-item-card-body'> 
+            {menuItem.desc}
+          </div>
+        }
         <div className='menu-item-card-footer'>
-          <p>Currently Unavailable</p>
+          Currently Unavailable
         </div>
       </div>
     )
@@ -23,16 +25,18 @@ const MenuItemCard = ({menuItem, setShowItemModalObjId}) => {
       className='menu-item-card' 
       onClick={()=>setShowItemModalObjId(menuItem._id)}
       whileHover={!isMobile ? {scale: 1.1} : null}
-      whileTap={{scale: 0.9}}
+      whileTap={!isMobile ? {scale: 0.9} : null}
     >
       <div className='menu-item-card-header'> 
         {menuItem.name}
       </div>
-      <div className='menu-item-card-body'> 
-        {menuItem.desc && <p>{menuItem.desc}</p>}
-      </div>
+      {menuItem.desc && 
+        <div className='menu-item-card-body'> 
+          {menuItem.desc}
+        </div>
+      }
       <div className='menu-item-card-footer'>
-        <p>${menuItem.price_md.toFixed(2)} {menuItem.price_lg && `$${menuItem.price_lg.toFixed(2)}`}</p>
+        <p>${menuItem.price_md.toFixed(2)} {menuItem.price_lg && `- $${menuItem.price_lg.toFixed(2)}`}</p>
       </div>
     </motion.div>
   )

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { GrClose } from 'react-icons/gr'
-import { BiSearch } from 'react-icons/bi' 
 import { motion, AnimatePresence } from 'framer-motion'
 
 const HamburgerMenu = ({categories, setCategory, category, toggleSearchBar}) => {
@@ -19,15 +18,8 @@ const HamburgerMenu = ({categories, setCategory, category, toggleSearchBar}) => 
   }
 
   return (
-      <div className='mobile-header'>
-        <div className='mobile-menu-header'>
-          <div>Phnom Penh</div>
-          <div className='mobile-menu-btns'>
-            <motion.div
-              whileTap={{scale: 0.9}}
-            >
-              <BiSearch onClick={toggleSearchBar}/>
-            </motion.div>
+      <>
+          <div className='hamburger-btn'>
             <AnimatePresence exitBeforeEnter>
               {!isOpen && (
                   <motion.div
@@ -54,7 +46,6 @@ const HamburgerMenu = ({categories, setCategory, category, toggleSearchBar}) => 
                   </motion.div>
               )}
             </AnimatePresence>
-          </div>
         </div>
         <AnimatePresence>
           {isOpen &&
@@ -84,7 +75,7 @@ const HamburgerMenu = ({categories, setCategory, category, toggleSearchBar}) => 
             </motion.div>
           }
         </AnimatePresence>
-      </div>
+      </>
   )
 }
 

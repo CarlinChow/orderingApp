@@ -154,7 +154,7 @@ const MenuItemModal = ({menuItem, closeModal}) => {
               <div className='name'>{menuItem.name}</div>
               {menuItem.desc && 
                 <div className='desc'>
-                  {`~${menuItem.desc}`}
+                  {menuItem.desc}
                 </div>
               }
             </div>

@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { updateFoodOrderByIndex, updateOrderInfo, clearOrder } from '../features/orderSlice'
 import { usePostOrderMutation, useGetTimeSlotsQuery } from '../features/api'
 import { useState, useEffect } from 'react'
@@ -13,10 +13,9 @@ import Backdrop from './Backdrop'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-toastify'
 
-const Cart = ({closeCart}) => {
+const Cart = ({closeCart, order}) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const order = useSelector(state => state.order)
   const [ postOrder, results ] = usePostOrderMutation()
   const { data, refetch, isLoading, isError, error } = useGetTimeSlotsQuery()
   const [ showDeleteItemIndex, setShowDeleteItemIndex ] = useState(null) 
@@ -183,53 +182,13 @@ const Cart = ({closeCart}) => {
           x: "100vw",
         }}
       >
-        <div className='cart-back-btn' onClick={closeCart}> 
+        <div className='cart-header' onClick={closeCart}> 
           <IoIosArrowBack fontSize='1.5rem'/>
-        </div>
-        <h1>ORDER SUMMARY</h1>
-        <div className='cart-input'>
-          <input name='name' type='text' value={order.name} placeholder='Name (required)' onChange={(e)=>handleChange(e)}/>
-          <input name='telephoneNum'type='tel' value={order.telephoneNum} placeholder='Phone Number (required)' onChange={(e)=>handleChange(e)}/>
-          <textarea name='specialInstructions' type='text' value={order.specialInstructions} placeholder='Add special instructions here...' onChange={(e)=>handleChange(e)} rows={3}/>
-          <div className='pickuptime-select'>
-            <Select 
-              isSearchable={false}
-              placeholder='Please select a pickup time (required) ...'
-              value={order.pickUpTime === '' ? '' : {
-                value: order.pickUpTime,
-                label: (order.pickUpTime.slice(0, 2) % 12).toString().concat(':', order.pickUpTime.slice(2,4), order.pickUpTime.slice(0, 2) > 12 ? ' PM' : ' AM')
-              }}
-              options={pickupTimes} 
-              noOptionsMessage={() => 'Sorry, no pickup times available right now'}
-              onChange={(e) => handlePickupTimeChange(e)}
-              styles={selectStyle}
-            />
-          </div>
-          <div className='utensils-container'>
-            <label>
-              Utensils
-              <Toggle 
-                checked={utensils} 
-                onChange={(e) => setUtensils(e.target.checked ? true : false)}
-              />
-            </label>
-            <AnimatePresence> 
-              {utensils && 
-                <motion.label
-                  initial={{opacity: 0}}
-                  animate={{opacity: 1}}
-                  exit={{opacity: 0}}
-                >
-                  <input name='utensils' type='number' min='0' value={order.utensils} onChange={e=>handleChange(e)}/> 
-                  sets
-                </motion.label>
-              } 
-            </AnimatePresence>
-          </div>
+          <div>Phnom Penh Restaurant</div>
         </div>
         <div className='cart-items-container'>
           <div className='cart-items-header'>
-            Your Items :
+            Your Items
           </div>
           <div className="cart-items">
             {order.foodOrderArr.length === 0 && 
@@ -309,16 +268,67 @@ const Cart = ({closeCart}) => {
             <div>${((order.orderSubTotal * 0.05) + order.orderSubTotal).toFixed(2)}</div>
           </div>
         </div>
-        <motion.button 
-          className='place-order-btn'
-          onClick={(e)=>handleSubmitOrder(e)}
-          whileHover={{scale: 1.1}}
-          whileTap={{scale: 0.9}}
-        >
-          <span>
-            Place Order
-          </span>
-        </motion.button>
+        <div className='cart-input'>
+          <div className='cart-input-header'>Order Details</div>
+          <input name='name' type='text' value={order.name} placeholder='Name (required)' onChange={(e)=>handleChange(e)}/>
+          <input name='telephoneNum'type='tel' value={order.telephoneNum} placeholder='Phone Number (required)' onChange={(e)=>handleChange(e)}/>
+          <textarea name='specialInstructions' type='text' value={order.specialInstructions} placeholder='Add special instructions here...' onChange={(e)=>handleChange(e)} rows={3}/>
+          <div className='pickuptime-select'>
+            <Select 
+              isSearchable={false}
+              placeholder='Please select a pickup time (required) ...'
+              value={order.pickUpTime === '' ? '' : {
+                value: order.pickUpTime,
+                label: (order.pickUpTime.slice(0, 2) % 12).toString().concat(':', order.pickUpTime.slice(2,4), order.pickUpTime.slice(0, 2) > 12 ? ' PM' : ' AM')
+              }}
+              options={pickupTimes} 
+              noOptionsMessage={() => 'Sorry, no pickup times available right now'}
+              onChange={(e) => handlePickupTimeChange(e)}
+              styles={selectStyle}
+            />
+          </div>
+          <div className='utensils-container'>
+            <label>
+              Utensils
+              <Toggle 
+                checked={utensils} 
+                onChange={(e) => setUtensils(e.target.checked ? true : false)}
+              />
+            </label>
+            <AnimatePresence> 
+              {utensils && 
+                <motion.label
+                  initial={{opacity: 0}}
+                  animate={{opacity: 1}}
+                  exit={{opacity: 0}}
+                >
+                  <input name='utensils' type='number' min='0' value={order.utensils} onChange={e=>handleChange(e)}/> 
+                  sets
+                </motion.label>
+              } 
+            </AnimatePresence>
+          </div>
+        </div>
+        <div className='cart-footer'>
+          <motion.button
+            className='cart-footer-btn'
+            onClick={closeCart}
+            whileHover={{scale: 1.1}}
+            whileTap={{scale: 0.9}}
+          > 
+            Menu
+          </motion.button>
+          <motion.button 
+            className='place-order-btn'
+            onClick={(e)=>handleSubmitOrder(e)}
+            whileHover={{scale: 1.1}}
+            whileTap={{scale: 0.9}}
+          >
+            <span>
+              Place Order
+            </span>
+          </motion.button>
+        </div>
       </motion.div>
     </Backdrop>
   )

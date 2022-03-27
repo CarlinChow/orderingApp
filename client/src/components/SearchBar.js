@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { BiSearch } from 'react-icons/bi'
 
 export const useFilterItems = (searchQuery, items) => {
   if(!items){
@@ -9,7 +10,7 @@ export const useFilterItems = (searchQuery, items) => {
   }
   return items.filter((food) => {
     const foodItem = food.name.toLowerCase()
-    return foodItem.includes(searchQuery)
+    return foodItem.includes(searchQuery.toLowerCase())
   })
 }
 
@@ -20,20 +21,21 @@ const SearchBar = ({searchQuery, setSearchQuery}) => {
   }
 
   return (
-    <motion.div 
-      className='searchbar-container'
-      initial={{opacity: 0}}
-      animate={{opacity: 1}}
-      exit={{opacity: 0}}
-      transition={{duration: 0.2}}
-    >
-      <input 
-        type='text' 
-        value={searchQuery}
-        onChange={handleChange} 
-        placeholder='search for an item here...'
-      />
-    </motion.div>
+      <motion.div 
+        className='searchbar-container'
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0}}
+        transition={{duration: 0.2}}
+      >
+        <input 
+          type='search' 
+          value={searchQuery}
+          onChange={handleChange} 
+          placeholder='search for an item here...'
+        />
+        <BiSearch fontSize='2rem'/>
+      </motion.div>
   )
 }
 

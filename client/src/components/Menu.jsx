@@ -8,7 +8,7 @@ import { useMediaQuery } from 'react-responsive'
 import HamburgerMenu from './HamburgerMenu'
 import SearchBar ,{ useFilterItems } from './SearchBar' 
 
-const Menu = () => {
+const Menu = ({order}) => {
   const categories = [
     'Kitchen Suggestions',
     'Noodles(Cambodian Style)',
@@ -23,7 +23,6 @@ const Menu = () => {
   const [ category, setCategory ] = useState('Kitchen Suggestions')
   const [ showItemModalObjId, setShowItemModalObjId ] = useState(null)
   const [ searchQuery, setSearchQuery ] = useState('')
-  const [ openSearchBar, setOpenSearchBar] = useState(false)
   const filteredSearchItems = useFilterItems(searchQuery, data)
   const isMobile = useMediaQuery({ maxWidth: 992})
 
@@ -31,13 +30,6 @@ const Menu = () => {
     // refetches every 3 mins
     setInterval(refetch, 180000)
   },[refetch])
-  
-  const toggleSearchBar = () => {
-    setOpenSearchBar(!openSearchBar)
-    if(openSearchBar){
-      setSearchQuery('')
-    }
-  }
 
   return (
     <div className='menu'>
@@ -61,23 +53,27 @@ const Menu = () => {
         </div>
       }
       {isMobile && 
-        <HamburgerMenu 
-          categories={categories}
-          setCategory={setCategory}
-          category={category}
-          toggleSearchBar={toggleSearchBar}
-        />
+        <div className='mobile-header'>
+          <div className='mobile-title'>Phnom Penh</div>
+          <div className='mobile-menu-header'>
+            <SearchBar 
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              items={data ? data : null}
+            />
+            <HamburgerMenu 
+              categories={categories}
+              setCategory={setCategory}
+              category={category}
+            />
+          </div>
+        </div>
       }
-      <AnimatePresence>
-        {(!isMobile || openSearchBar) &&
-          <SearchBar 
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            items={data ? data : null}
-          />
-        }
-      </AnimatePresence>
-      <div className='menu-items'>
+      <div className={`menu-items ${isMobile && order.numOfItems > 0 ? 'footer-active' : ''}`}>
+        <div className='menu-category'>
+          {searchQuery ? 'Search Results' : category}
+        </div>
+
         {isLoading 
         ? <LoadingSpinner />
         : isError 
