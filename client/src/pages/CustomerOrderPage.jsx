@@ -46,6 +46,7 @@ const CustomerOrderPage = () => {
       <AnimatePresence> 
         {showCart && 
           <Cart 
+            isMobile={isMobile}
             order={order}
             closeCart={()=>setShowCart(false)}
           />

@@ -3,7 +3,6 @@ import { updateFoodOrderByIndex, updateOrderInfo, clearOrder } from '../features
 import { usePostOrderMutation, useGetTimeSlotsQuery } from '../features/api'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
 import LoadingSpinner from './LoadingSpinner'
 import DeleteDropdown from './DeleteDropdown'
 import Select from 'react-select'
@@ -12,14 +11,16 @@ import { IoIosArrowBack } from 'react-icons/io'
 import Backdrop from './Backdrop'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-toastify'
+import EditItemModal from './EditItemModal'
 
-const Cart = ({closeCart, order}) => {
+const Cart = ({closeCart, order, isMobile}) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [ postOrder, results ] = usePostOrderMutation()
   const { data, refetch, isLoading, isError, error } = useGetTimeSlotsQuery()
   const [ showDeleteItemIndex, setShowDeleteItemIndex ] = useState(null) 
   const [ utensils, setUtensils ] = useState(false)
+  const [ openEditModalIndex, setOpenEditModalIndex ] = useState(null)
   const [ pickupTimes, setPickupTimes ] = useState(data ? data.map(item => {
     return{
       value: item,
@@ -28,21 +29,24 @@ const Cart = ({closeCart, order}) => {
   }) : [])
 
   const selectStyle = {
-    option: (styles, {data, isFocused, isSelected}) => ({
+    option: (styles, {data, isSelected}) => ({
       ...styles,
       backgroundColor: isSelected ? '#F8F8FF' : data.color,
       color: 'black',
+      fontSize: '0.8rem',
       "&:active": {
         backgroundColor: '#DCDCDC'
       }
     }),
-    control: (styles, {data, isFocused, isSelected}) => ({
+    control: (styles, {isFocused}) => ({
       ...styles,
-      boxShadow: 0,
-      borderColor: isFocused ? 'grey' : 'lightgrey',
+      boxShadow: isFocused ? "0 0 5px rgba(81, 203, 238, 1)" : 0,
+      borderColor: isFocused ? "rgba(81, 203, 238, 1)" : 'lightgrey',
+      fontSize: '0.9rem',
+      padding: '0.25rem 0.25rem',
       "&:hover": {
         borderColor: 'none'
-      }
+      },
     })
   }
 
@@ -96,36 +100,6 @@ const Cart = ({closeCart, order}) => {
     }))
   }
   
-  const handleQuantityChange = (event, item, index, action) => {
-    event.preventDefault()
-
-    const updatedItem = {...item}
-    if(action === 'add'){
-      dispatch(updateFoodOrderByIndex({
-        index: index,
-        updatedFood: {
-        ...updatedItem,
-        quantity: updatedItem.quantity + 1
-        }
-      }))
-    }
-
-    //  subract quantity by 1
-    else{
-      if(updatedItem.quantity === 1){
-        setShowDeleteItemIndex(index)
-      }
-      else{
-        dispatch(updateFoodOrderByIndex({
-          index: index,
-          updatedFood: {
-          ...updatedItem,
-          quantity: updatedItem.quantity - 1
-          }
-        }))
-      }
-    }
-  }
 
   const handleSubmitOrder = (event) => {
     event.preventDefault()
@@ -164,9 +138,18 @@ const Cart = ({closeCart, order}) => {
   }
 
   return (
-    <Backdrop onClick={closeCart}>
+    <Backdrop onClick={!isMobile ? closeCart : null}>
+      <AnimatePresence>
+        {openEditModalIndex !== null && 
+          <EditItemModal 
+            item={order.foodOrderArr[openEditModalIndex]} 
+            closeModal={()=>setOpenEditModalIndex(null)}
+            index={openEditModalIndex}
+          />
+        }
+      </AnimatePresence>
       <motion.div 
-        className='cart' 
+        className={`cart ${openEditModalIndex === null ? '' : 'edit-item'}`} 
         onClick={(e) => e.stopPropagation()}
         initial={{
           x: "100vw",
@@ -182,8 +165,11 @@ const Cart = ({closeCart, order}) => {
           x: "100vw",
         }}
       >
-        <div className='cart-header' onClick={closeCart}> 
-          <IoIosArrowBack fontSize='1.5rem'/>
+        <div className='cart-header'> 
+          <IoIosArrowBack 
+            fontSize='1.5rem'
+            onClick={closeCart}
+          />
           <div>Phnom Penh Restaurant</div>
         </div>
         <div className='cart-items-container'>
@@ -215,8 +201,7 @@ const Cart = ({closeCart, order}) => {
                         />
                       </div>
                     </div>
-                    {(item.food.price_lg !== null || item.note) && 
-                      <div className='note'>
+                    <div className='note'>
                       {item.food.price_lg !== null &&  
                         <div>
                           + size: {computeSizeToString(item.size)}
@@ -227,27 +212,19 @@ const Cart = ({closeCart, order}) => {
                           + note: {item.note}
                         </div>
                       }
+                      <div> 
+                        + quantity: {item.quantity}
                       </div>
-                    }
+                    </div>
                   </div>
                   <div className='cart-item-footer'>
-                    <motion.div 
-                      className='quantity-container'
+                    <motion.button 
+                      className='cart-item-edit-btn'
+                      onClick={()=>setOpenEditModalIndex(index)}
                       whileTap={{scale: 0.9}}
                     >
-                      <div className='quantity-btn' onClick={(e)=>handleQuantityChange(e, item, index, 'sub')}>
-                        <AiOutlineMinus />
-                      </div>
-                      <div className='quantity'> 
-                        {item.quantity}
-                      </div>
-                      <div 
-                        className='quantity-btn' 
-                        onClick={(e)=>handleQuantityChange(e, item, index, 'add')}
-                      >
-                        <AiOutlinePlus />
-                      </div>
-                    </motion.div>
+                      Edit
+                    </motion.button>
                     <div>${item.foodTotal.toFixed(2)}</div>
                   </div>
                 </div>

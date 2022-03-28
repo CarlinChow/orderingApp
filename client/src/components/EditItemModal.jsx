@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { addToOrder } from '../features/orderSlice'
+import { updateFoodOrderByIndex } from '../features/orderSlice'
 import { IoClose } from 'react-icons/io5'
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
 import Select from 'react-select'
@@ -9,10 +9,10 @@ import Backdrop  from './Backdrop'
 import { useMediaQuery } from 'react-responsive'
 import { toast } from 'react-toastify'
 
-const MenuItemModal = ({menuItem, closeModal}) => {
 
+const EditItemModal = ({item, closeModal, index}) => {
   const selectStyle = {
-    option: (styles, {data, isFocused, isSelected}) => ({
+    option: (styles, {data, isSelected}) => ({
       ...styles,
       backgroundColor: isSelected ? '#F8F8FF' : data.color,
       color: 'black',
@@ -20,7 +20,7 @@ const MenuItemModal = ({menuItem, closeModal}) => {
         backgroundColor: '#DCDCDC'
       }
     }),
-    control: (styles, {data, isFocused, isSelected}) => ({
+    control: (styles, {isFocused}) => ({
       ...styles,
       boxShadow: 0,
       borderColor: isFocused ? 'grey' : 'lightgrey',
@@ -30,6 +30,7 @@ const MenuItemModal = ({menuItem, closeModal}) => {
     })
   }
   
+  // MODAL ANIMATIONS
   const mobileVariants = {
     visible: { 
       y: 0,
@@ -60,29 +61,16 @@ const MenuItemModal = ({menuItem, closeModal}) => {
       opacity: 0,
     },
   }
+
   const isMobile = useMediaQuery({maxWidth: 768})
   const dispatch = useDispatch()
   const sizeOptions = [
-    {label: 'Large', value: menuItem.price_lg, id: 2},
-    {label: 'Small', value: menuItem.price_md, id: 1}, 
+    {label: 'Large', value: item.food.price_lg, id: 2},
+    {label: 'Small', value: item.food.price_md, id: 1}, 
   ]
 
-  const initialFoodOrder = {
-    size: 1,
-    singleUnitPrice: menuItem.price_md,
-    food: menuItem,
-    quantity: 1,
-    note: '',
-    foodTotal: menuItem.price_md,
-  }
-
-  const [ size, setSize ] = useState({label: 'Small', value: menuItem.price_md, id: 1})
-  const [ foodOrder, setFoodOrder ] = useState(initialFoodOrder)
-
-  useEffect(() => {
-    setSize({label: 'Small', value: menuItem.price_md, id: 1})
-    setFoodOrder(initialFoodOrder)
-  }, [menuItem])
+  const [ size, setSize ] = useState(item.size === 1 ? sizeOptions[1] : sizeOptions[0])
+  const [ foodOrder, setFoodOrder ] = useState(item)
 
   useEffect(() => {
     setFoodOrder((prev) => {
@@ -95,21 +83,6 @@ const MenuItemModal = ({menuItem, closeModal}) => {
     })
   }, [foodOrder.quantity, size.value])
 
-  const closeMenuItemModal = (event) => {
-    event.preventDefault()
-    closeModal()
-    setSize({label: 'Small', value: menuItem.price_md, id: 1})
-    setFoodOrder(prev => {
-      return{
-        ...prev,
-        size: 1,
-        quantity: 1,
-        foodTotal: menuItem.price_md,
-        note: '',
-      }
-    })
-  }
-
   const handleOnChangeNote = (event) => {
     event.preventDefault()
     setFoodOrder(prev => {
@@ -120,23 +93,17 @@ const MenuItemModal = ({menuItem, closeModal}) => {
     })
   }
 
-
-  const handleAddtoOrder = (event) => {
+  const handleUpdateOrder = (event, index) => {
     event.preventDefault()
-    dispatch(addToOrder(foodOrder))
-    closeMenuItemModal(event)
-    toast.info("Item has been added to your cart.", {
-       theme: "colored",
-       autoClose: 1500,
-       hideProgressBar: true,
-      })
+    dispatch(updateFoodOrderByIndex({updatedFood: foodOrder, index: index}))
+    toast.info("Item has been updated!", {autoClose: 1500, hideProgressBar: true})
+    closeModal()
   }
 
-
   return (
-    <Backdrop 
-      onClick={closeModal} 
-      addClass={isMobile ? 'bottom' : 'center'}
+    <Backdrop
+      addClass='high-z-index bottom'
+      onClick={closeModal}
     >
       <motion.div 
         className='menu-item-modal-content'
@@ -151,10 +118,10 @@ const MenuItemModal = ({menuItem, closeModal}) => {
           </div>
           <div className='menu-item-modal-body'>
             <div className='menu-item-modal-body-name-desc'>
-              <div className='name'>{menuItem.name}</div>
-              {menuItem.desc && 
+              <div className='name'>{item.food.name}</div>
+              {item.food.desc && 
                 <div className='desc'>
-                  {menuItem.desc}
+                  {item.food.desc}
                 </div>
               }
             </div>
@@ -165,7 +132,7 @@ const MenuItemModal = ({menuItem, closeModal}) => {
               placeholder='...add additional notes here'
               rows={3}
             />
-            {menuItem.price_lg && 
+            {item.food.price_lg && 
               <div className='size-select'>
                 <Select
                   isSearchable={false}
@@ -214,14 +181,14 @@ const MenuItemModal = ({menuItem, closeModal}) => {
           </div>
           <div className='menu-item-modal-btns'>
             <motion.button 
-              onClick={(e)=>handleAddtoOrder(e)}
+              onClick={(e)=>handleUpdateOrder(e, index)}
               whileTap={{scale: 0.9}}
               whileHover={{scale: 1.1}}
             >
-              Add
+              Update
             </motion.button>
             <motion.button 
-              onClick={closeMenuItemModal}
+              onClick={closeModal}
               whileTap={{scale: 0.9}}
               whileHover={{scale: 1.1}}
             >
@@ -233,4 +200,4 @@ const MenuItemModal = ({menuItem, closeModal}) => {
   )
 }
 
-export default MenuItemModal
+export default EditItemModal

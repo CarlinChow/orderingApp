@@ -160,7 +160,7 @@
   left: 0;
   height: 100vh;
   width: 100vw;
-  background: #000000e1;
+  background: #000000b2;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -174,4 +174,8 @@
 
 .backdrop.bottom{
   align-items: flex-end;
+}
+
+.backdrop.high-z-index{
+  z-index: 8;
 }
