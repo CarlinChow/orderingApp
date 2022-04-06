@@ -52,6 +52,7 @@ const AddFoodForm = ({closeModal}) => {
     }
     postFood(newFoodItem)
     setNewFoodItem(initialFoodItemState)
+    closeModal()
   }
 
   return (

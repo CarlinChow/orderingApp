@@ -1,19 +1,17 @@
 const TimeSlots = require('../models/timeSlotsModel')
 const asyncHandler = require('express-async-handler')
+const moment = require('moment-timezone')
 
 //  @desc: get timeslots from db 
 //  @route: GET /api/timeslots
 //  @access: PUBLIC
 const getTimeSlots = asyncHandler( async (req , res) => {
   const timeSlots = await TimeSlots.find().sort({'time': 1})
-  const time = new Date()
-  time.setMinutes(time.getMinutes() + 30)
-  const timeString = time.toLocaleTimeString('en-US', {hour12: false})
-  const formatTime = timeString.slice(0,2).concat(timeString.slice(3, 5))
+  const time = moment().add(30, 'minutes').tz("America/Vancouver").format("HHmm")
   timeSlots
     .filter(timeslot => (timeslot.active === true))
     .map( async(activeTimeslot) => {
-      if(activeTimeslot.time <= formatTime){
+      if(activeTimeslot.time <= time){
         activeTimeslot.active = false
         await TimeSlots.findByIdAndUpdate(activeTimeslot._id, activeTimeslot)
       }

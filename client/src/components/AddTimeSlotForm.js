@@ -63,6 +63,7 @@ const AddTimeSlotForm = ({closeModal}) => {
       currentQuantity: newTimeSlot.startingQuantity
     })
     setNewTimeSlot(initialTimeSlotState)
+    closeModal()
   }
 
   return (
