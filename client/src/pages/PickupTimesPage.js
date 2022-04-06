@@ -9,6 +9,7 @@ import LoadingSpinner from '../components/LoadingSpinner'
 import { toast } from 'react-toastify'
 import { GrPowerReset, GrAdd  } from 'react-icons/gr'
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai'
+import { set } from 'immer/dist/internal'
 
 const PickupTimesPage = () => {
   const [ isDropdownOpen, setIsDropdownOpen ] = useState(false)
@@ -60,6 +61,11 @@ const PickupTimesPage = () => {
     setIsDropdownOpen(false)
   }
 
+  const handleAddItem = () => {
+    setIsModalOpen(true)
+    setIsDropdownOpen(false)
+  }
+
   return (
       <div className="content">
         <div className='page-header'>
@@ -103,7 +109,7 @@ const PickupTimesPage = () => {
                 </div>
                 <div 
                   className='foods-dropdown-item'
-                  onClick={()=>setIsModalOpen(true)}
+                  onClick={handleAddItem}
                 >
                   <GrAdd />
                   <div>Add Item</div>
