@@ -1,6 +1,5 @@
 import Order from './Order'
 import LoadingSpinner from './LoadingSpinner'
-import { AnimatePresence } from 'framer-motion'
 
 const OrdersCard = ({status, orderArr, isLoading, dropdownObjId, setDropdownObjId}) => {
   return (
@@ -12,7 +11,7 @@ const OrdersCard = ({status, orderArr, isLoading, dropdownObjId, setDropdownObjI
       {isLoading 
         ? <LoadingSpinner /> 
         : (orderArr.length > 0 
-          ? <AnimatePresence>
+          ? <>
               {orderArr.map((orderItem) => (
                 <Order 
                   orderItem={orderItem} 
@@ -21,8 +20,8 @@ const OrdersCard = ({status, orderArr, isLoading, dropdownObjId, setDropdownObjI
                   setDropdownObjId={setDropdownObjId}
                 />
               ))} 
-            </AnimatePresence>
-          : <p className='empty-order'>Nothing to show here...</p>)}
+            </>
+          : <div className='empty-order'>Nothing to show here...</div>)}
       </div>
     </div>
   )

@@ -11,21 +11,7 @@ const Order = ({orderItem, dropdownObjId, setDropdownObjId}) => {
   return (
     <motion.div 
       className='order'
-      initial={{opacity: 0}}
-      animate={{opacity: 1}}
-      exit={{opacity: 0}}
-      transition={{duration: 0.3}}
     >
-      <div className='order-header'> 
-        <p>{orderItem.name}</p>
-        <Dropdown 
-          orderItem={orderItem} 
-          setModalViewOrder={setModalViewOrder}
-          dropdownObjId={dropdownObjId}
-          setDropdownObjId={setDropdownObjId}
-        />
-      </div>
-      <p>{orderItem.telephoneNum}</p>
       <AnimatePresence> 
         {modalViewOrder && 
           <ModalViewOrder 
@@ -34,8 +20,18 @@ const Order = ({orderItem, dropdownObjId, setDropdownObjId}) => {
           />
         }
       </AnimatePresence>
-      <p>Pick up time: {formattedTime}</p>
-      <p>Posted at: {createdAt.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</p>
+      <div className='order-header'> 
+        {orderItem.name}
+        <Dropdown 
+          orderItem={orderItem} 
+          setModalViewOrder={setModalViewOrder}
+          dropdownObjId={dropdownObjId}
+          setDropdownObjId={setDropdownObjId}
+        />
+      </div>
+      <div>{orderItem.telephoneNum}</div>
+      <div>Pick up time: {formattedTime}</div>
+      <div>Posted at: {createdAt.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</div>
     </motion.div>
   )
 }

@@ -21,11 +21,11 @@ function App() {
         <Routes>
           <Route path='/' element={<CustomerOrderPage />}/>
           <Route path='login' element={<LoginPage />}/>
+          <Route path='register' element={<RegisterUserPage />}/> 
           <Route path='admin' element={<AdminContainer />}>
             <Route path='orders' element={<OrdersPage />}/>
             <Route path='pickuptimes' element={<PickupTimesPage />}/>
             <Route path='foods' element={<FoodsPage />}/>
-            <Route path='register' element={<RegisterUserPage />}/>
           </Route>
         </Routes>
       </Router>

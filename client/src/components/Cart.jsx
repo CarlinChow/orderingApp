@@ -1,10 +1,10 @@
 import { useDispatch } from 'react-redux'
-import { updateFoodOrderByIndex, updateOrderInfo, clearOrder } from '../features/orderSlice'
+import { deleteFoodItemByIndex, updateOrderInfo, clearOrder } from '../features/orderSlice'
 import { usePostOrderMutation, useGetTimeSlotsQuery } from '../features/api'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import LoadingSpinner from './LoadingSpinner'
-import DeleteDropdown from './DeleteDropdown'
+import { AiOutlineClose } from 'react-icons/ai'
 import Select from 'react-select'
 import Toggle from 'react-toggle'
 import { IoIosArrowBack } from 'react-icons/io'
@@ -12,8 +12,10 @@ import Backdrop from './Backdrop'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-toastify'
 import EditItemModal from './EditItemModal'
+import { useMediaQuery } from 'react-responsive'
 
-const Cart = ({closeCart, order, isMobile}) => {
+const Cart = ({closeCart, order}) => {
+  const isMobile = useMediaQuery({maxWidth: 768})
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [ postOrder, results ] = usePostOrderMutation()
@@ -33,7 +35,7 @@ const Cart = ({closeCart, order, isMobile}) => {
       ...styles,
       backgroundColor: isSelected ? '#F8F8FF' : data.color,
       color: 'black',
-      fontSize: '0.8rem',
+      fontSize: isMobile ? '0.8rem' : '0.9rem',
       "&:active": {
         backgroundColor: '#DCDCDC'
       }
@@ -100,6 +102,11 @@ const Cart = ({closeCart, order, isMobile}) => {
     }))
   }
   
+  const handleDelete = (event, index) => {
+    event.preventDefault()
+    dispatch(deleteFoodItemByIndex(index))
+    toast.info('Item has been deleted', {autoClose: 1500, hideProgressBar: true})
+  }
 
   const handleSubmitOrder = (event) => {
     event.preventDefault()
@@ -111,12 +118,10 @@ const Cart = ({closeCart, order, isMobile}) => {
       toast.error('Please fill in all required fields!')
       return
     }
-
     if(!order.pickUpTime){
       toast.error('Please select a pick up time!')
       return
     }
-    
     postOrder({
       ...order,
       utensils: !utensils ? 0 : order.utensils,
@@ -138,7 +143,7 @@ const Cart = ({closeCart, order, isMobile}) => {
   }
 
   return (
-    <Backdrop onClick={!isMobile ? closeCart : null}>
+    <Backdrop onClick={closeCart}>
       <AnimatePresence>
         {openEditModalIndex !== null && 
           <EditItemModal 
@@ -167,6 +172,7 @@ const Cart = ({closeCart, order, isMobile}) => {
       >
         <div className='cart-header'> 
           <IoIosArrowBack 
+            className='icon'
             fontSize='1.5rem'
             onClick={closeCart}
           />
@@ -178,12 +184,13 @@ const Cart = ({closeCart, order, isMobile}) => {
           </div>
           <div className="cart-items">
             {order.foodOrderArr.length === 0 && 
-              <motion.p
+              <motion.div
+                className='cart-items-empty-message'
                 initial={{opacity: 0}}
                 animate={{opacity: 1}}
                 >
-                  ..Your order is looking a little empty, start by adding some items
-              </motion.p>
+                Your order is looking a little empty, start by adding some items from the menu...
+              </motion.div>
             }
               {order.foodOrderArr.map((item, index) => (
                 <div
@@ -193,13 +200,11 @@ const Cart = ({closeCart, order, isMobile}) => {
                   <div>
                     <div className='cart-item-header'>
                       {item.food.name}
-                      <div className='icon'>
-                        <DeleteDropdown
-                          index={index} 
-                          showDeleteItemIndex={showDeleteItemIndex}
-                          setShowDeleteItemIndex={setShowDeleteItemIndex}
-                        />
-                      </div>
+                      <AiOutlineClose
+                        className='icon' 
+                        fontSize='1rem'
+                        onClick={(e)=>handleDelete(e, index)}
+                      />
                     </div>
                     <div className='note'>
                       {item.food.price_lg !== null &&  
@@ -249,9 +254,10 @@ const Cart = ({closeCart, order, isMobile}) => {
           <div className='cart-input-header'>Order Details</div>
           <input name='name' type='text' value={order.name} placeholder='Name (required)' onChange={(e)=>handleChange(e)}/>
           <input name='telephoneNum'type='tel' value={order.telephoneNum} placeholder='Phone Number (required)' onChange={(e)=>handleChange(e)}/>
-          <textarea name='specialInstructions' type='text' value={order.specialInstructions} placeholder='Add special instructions here...' onChange={(e)=>handleChange(e)} rows={3}/>
+          <textarea name='specialInstructions' type='text' value={order.specialInstructions} placeholder='Add special instructions here...' onChange={(e)=>handleChange(e)} rows={4}/>
           <div className='pickuptime-select'>
-            <Select 
+            <Select
+              menuPlacement={isMobile ? 'auto' : 'top'} 
               isSearchable={false}
               placeholder='Please select a pickup time (required) ...'
               value={order.pickUpTime === '' ? '' : {
@@ -287,14 +293,16 @@ const Cart = ({closeCart, order, isMobile}) => {
           </div>
         </div>
         <div className='cart-footer'>
-          <motion.button
-            className='cart-footer-btn'
-            onClick={closeCart}
-            whileHover={{scale: 1.1}}
-            whileTap={{scale: 0.9}}
-          > 
-            Menu
-          </motion.button>
+          {isMobile && 
+            <motion.button
+              className='cart-footer-btn'
+              onClick={closeCart}
+              whileHover={{scale: 1.1}}
+              whileTap={{scale: 0.9}}
+            > 
+              Menu
+            </motion.button>
+          }
           <motion.button 
             className='place-order-btn'
             onClick={(e)=>handleSubmitOrder(e)}

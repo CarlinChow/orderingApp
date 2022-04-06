@@ -24,7 +24,6 @@ const MenuItemCard = ({menuItem, setShowItemModalObjId}) => {
     <motion.div 
       className='menu-item-card' 
       onClick={()=>setShowItemModalObjId(menuItem._id)}
-      whileHover={!isMobile ? {scale: 1.1} : null}
       whileTap={!isMobile ? {scale: 0.9} : null}
     >
       <div className='menu-item-card-header'> 
@@ -36,7 +35,7 @@ const MenuItemCard = ({menuItem, setShowItemModalObjId}) => {
         </div>
       }
       <div className='menu-item-card-footer'>
-        <p>${menuItem.price_md.toFixed(2)} {menuItem.price_lg && `- $${menuItem.price_lg.toFixed(2)}`}</p>
+        ${menuItem.price_md.toFixed(2)} {menuItem.price_lg && `- $${menuItem.price_lg.toFixed(2)}`}
       </div>
     </motion.div>
   )

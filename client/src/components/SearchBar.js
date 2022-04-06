@@ -15,7 +15,6 @@ export const useFilterItems = (searchQuery, items) => {
 }
 
 const SearchBar = ({searchQuery, setSearchQuery}) => {
-
   const handleChange = (event) => {
     setSearchQuery(event.target.value)
   }

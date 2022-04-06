@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useMediaQuery } from 'react-responsive'
 import HamburgerMenu from './HamburgerMenu'
 import SearchBar ,{ useFilterItems } from './SearchBar' 
+import gif from '../img/missing.gif'
 
 const Menu = ({order}) => {
   const categories = [
@@ -33,23 +34,35 @@ const Menu = ({order}) => {
 
   return (
     <div className='menu'>
-      {!isMobile && 
-        <div className='menu-header'>
-          {categories.map((item, index) => (
-            <motion.div 
-              key={index}
-              className={`menu-header-item ${category === item ? 'selected' : ''}`}
-              onClick={()=>setCategory(item)}
-              whileTap={{scale: 0.9}}
-              whileHover={{
-                backgroundColor: '#808080',
-                color: '#FFFFFF',
-          
-              }}
-            > 
-              {item}
-            </motion.div>
-          ))}
+      {!isMobile &&
+        <div className='customer-page-header'> 
+          <div className='menu-title'> 
+            Phnom Penh Restaurant
+          </div>
+          <div className='menu-header'>
+            {categories.map((item, index) => (
+              <motion.div 
+                key={index}
+                className={`menu-header-item ${category === item ? 'selected' : ''}`}
+                onClick={()=>setCategory(item)}
+                whileTap={{scale: 0.9}}
+                whileHover={{
+                  backgroundColor: '#808080',
+                  color: '#FFFFFF',
+            
+                }}
+              > 
+                {item}
+              </motion.div>
+            ))}
+          </div>
+          <div className='searchbar-container'>
+            <SearchBar 
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              items={data ? data : null}
+            />
+          </div>
         </div>
       }
       {isMobile && 
@@ -70,16 +83,21 @@ const Menu = ({order}) => {
         </div>
       }
       <div className={`menu-items ${isMobile && order.numOfItems > 0 ? 'footer-active' : ''}`}>
-        <div className='menu-category'>
-          {searchQuery ? 'Search Results' : category}
-        </div>
+        {isMobile && 
+          <div className='menu-category'>
+            {searchQuery ? 'Search Results' : category}
+          </div>
+        }
 
         {isLoading 
         ? <LoadingSpinner />
         : isError 
         ? error.message
         : (searchQuery && filteredSearchItems.length === 0)
-        ? <div>Sorry, no items were found.</div> 
+        ? <div className='no-results-message'>
+            <div>Sorry, no items were found.</div>
+            <img src={gif} alt='loading...'/>
+          </div> 
         : searchQuery
         ? filteredSearchItems
             .map((filteredMenuItem, index) => (

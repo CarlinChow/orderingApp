@@ -52,11 +52,11 @@ const MenuItemModal = ({menuItem, closeModal}) => {
       }
     },
     hidden: {
-      y: '100vh',
+      y: '-100vh',
       opacity: 0,
     },
     exit: {
-      y: '-100vh',
+      y: '100vh',
       opacity: 0,
     },
   }

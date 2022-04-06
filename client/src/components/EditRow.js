@@ -21,7 +21,6 @@ const EditRow = ({foodItem, index, setEditRowObjectID}) => {
 
   useEffect(()=> {
     if(updateResults.isSuccess){
-      console.log('hello im here')
       toast.success('Item has been updated!')
       updateResults.reset()
     }

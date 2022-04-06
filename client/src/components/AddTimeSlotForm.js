@@ -1,10 +1,13 @@
 import { usePostTimeSlotMutation } from "../features/api"
 import { useState, useEffect } from 'react'
 import Toggle from 'react-toggle'
-import Button from './Button'
+import LoadingSpinner from './LoadingSpinner'
 import { toast } from 'react-toastify'
+import Backdrop from './Backdrop'
+import { motion } from 'framer-motion'
+import { AiOutlineClose } from 'react-icons/ai'
 
-const AddTimeSlotForm = () => {
+const AddTimeSlotForm = ({closeModal}) => {
   const initialTimeSlotState = {
     time: '0000',
     startingQuantity: '',
@@ -52,7 +55,7 @@ const AddTimeSlotForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     if(!newTimeSlot.time ||  !newTimeSlot.startingQuantity){
-      toast.warn('please fill in all fields before submitting')
+      toast.warn('Please fill in all fields before submitting')
       return
     }
     await postTimeSlot({
@@ -63,20 +66,39 @@ const AddTimeSlotForm = () => {
   }
 
   return (
-    <div className='add-form'>
-      <h1> 
-        Add a Time Slot
-      </h1>
-      <form>
-        <input type='time' value={formattedTime} name='time' onChange={e=>handleTimeChange(e)}/>
-        <input type='number' name='startingQuantity' value={newTimeSlot.startingQuantity} placeholder='Enter Starting Quantity' onChange={e=>handleInputChange(e)}/>
-        <label>
-          <Toggle name='active' checked={newTimeSlot.active} onChange={e=>handleInputChange(e)}/>
-          Active
-        </label>
-        <Button onClick={e=>handleSubmit(e)} text='Add' color='grey'/>
-      </form>
-    </div>
+    <Backdrop
+      onClick={closeModal}
+      addClass='center'
+    >
+      <motion.div 
+        className='add-form'
+        onClick={e=>e.stopPropagation()}
+        initial={{y: '-100vh'}}
+        animate={{y: 0}}
+        exit={{y: '100vh'}}
+      >
+        <div  className='add-form-header'>
+          <AiOutlineClose 
+            fontSize='1.7rem' 
+            className='icon'
+            onClick={closeModal}
+          />
+        </div>
+        <div className='add-form-title'>Add a Time Slot</div>
+        <form>
+          <input type='time' value={formattedTime} name='time' onChange={e=>handleTimeChange(e)}/>
+          <input type='number' name='startingQuantity' value={newTimeSlot.startingQuantity} placeholder='Enter Starting Quantity' onChange={e=>handleInputChange(e)}/>
+          <label>
+            <Toggle name='active' checked={newTimeSlot.active} onChange={e=>handleInputChange(e)}/>
+            Active
+          </label>
+          {results.isLoading 
+            ? <LoadingSpinner />
+            : <button onClick={e=>handleSubmit(e)}>Add</button>
+          }
+        </form>
+      </motion.div>
+    </Backdrop>
   )
 }
 

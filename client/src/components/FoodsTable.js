@@ -1,12 +1,11 @@
-import { useGetFoodsQuery } from "../features/api"
 import { useState, Fragment } from 'react'
 import ReadOnlyRow from './ReadOnlyRow'
 import EditRow from './EditRow'
 import LoadingSpinner from './LoadingSpinner'
 
-const FoodsTable = () => {
+const FoodsTable = ({foods}) => {
   const [ editRowObjectID, setEditRowObjectID ] = useState(null)
-  const { data, isLoading, isError, isSuccess, error } = useGetFoodsQuery()
+  const { data, isLoading, isError, error } = foods
 
   if(isLoading){
     return <LoadingSpinner />
@@ -16,7 +15,6 @@ const FoodsTable = () => {
   }
   return (
     <div className='foods-table'>
-      <div className='my-table'>
         <table>
           <thead>
             <tr>
@@ -41,8 +39,7 @@ const FoodsTable = () => {
                 </Fragment>
             ))}
           </tbody>
-        </table>
-      </div>
+      </table>
     </div>
   )
 }

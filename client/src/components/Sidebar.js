@@ -1,8 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useMatch } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../features/auth/authSlice'
-import Button from './Button'
 import { toast } from 'react-toastify'
+import { BiTimeFive, BiNotepad, BiLogOut } from 'react-icons/bi'
+import { GiHotMeal } from 'react-icons/gi'
+import { AiOutlineUserAdd } from 'react-icons/ai' 
 
 
 const Sidebar = () => {
@@ -17,25 +19,43 @@ const Sidebar = () => {
     navigate('/login')
   }
 
-  const handleRegisterUser = (event) => {
-    event.preventDefault()
-    navigate('/admin/register')
-  }
-
   return (
-
     <div className='sidebar'>
       <div className='sidebar-header'> 
         <h3>Welcome, {user ? user.name : null}</h3>
       </div>
       <div className='sidebar-content'> 
-        <Link className='sidebar-link' to="/admin/orders">Orders</Link>
-        <Link className='sidebar-link' to="/admin/foods">Foods</Link>
-        <Link className='sidebar-link' to="/admin/pickuptimes">Pickup Times</Link>
+        <Link 
+          className={`sidebar-link ${useMatch('/admin/orders') !== null ? 'selected' : ''}`} 
+          to="/admin/orders"
+        >
+          <BiNotepad fontSize='1.4rem'/>
+          <span>Orders</span>
+        </Link>
+        <Link 
+          className={`sidebar-link ${useMatch('/admin/foods') !== null ? 'selected' : ''}`}
+          to="/admin/foods"
+        >
+          <GiHotMeal fontSize='1.4rem'/>
+          <span>Foods</span>
+        </Link>
+        <Link 
+          className={`sidebar-link ${useMatch('/admin/pickuptimes') !== null ? 'selected' : ''}`}
+          to="/admin/pickuptimes"
+        >
+          <BiTimeFive fontSize='1.4rem'/>
+          <span>Pickup Times</span>
+        </Link>
       </div>
       <div className='sidebar-footer'> 
-        <Button text="Register a User" color='grey' onClick={(e)=>handleRegisterUser(e)}/>
-        <Button text='Logout' color='grey' onClick={(e)=>handleLogout(e)}/>
+        <div onClick={()=>navigate('/register')}>
+          <AiOutlineUserAdd />
+          Register User
+        </div>
+        <div onClick={(e)=>handleLogout(e)}>
+          <BiLogOut />
+          Log out
+        </div>
       </div>
     </div>
   )

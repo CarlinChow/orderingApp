@@ -53,11 +53,11 @@ const EditItemModal = ({item, closeModal, index}) => {
       }
     },
     hidden: {
-      y: '100vh',
+      y: '-100vh',
       opacity: 0,
     },
     exit: {
-      y: '-100vh',
+      y: '100vh',
       opacity: 0,
     },
   }
@@ -93,6 +93,11 @@ const EditItemModal = ({item, closeModal, index}) => {
     })
   }
 
+  const handleBackdropClick = (event) => {
+    event.stopPropagation()
+    closeModal()
+  }
+
   const handleUpdateOrder = (event, index) => {
     event.preventDefault()
     dispatch(updateFoodOrderByIndex({updatedFood: foodOrder, index: index}))
@@ -102,8 +107,8 @@ const EditItemModal = ({item, closeModal, index}) => {
 
   return (
     <Backdrop
-      addClass='high-z-index bottom'
-      onClick={closeModal}
+      addClass={isMobile ? 'high-z-index bottom' : 'high-z-index center'}
+      onClick={handleBackdropClick}
     >
       <motion.div 
         className='menu-item-modal-content'

@@ -25,10 +25,9 @@ const ModalViewOrder = ({orderItem, closeModal}) => {
       <motion.div 
         className='modal-content' 
         onClick={e => e.stopPropagation()}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        exit={{scale: 0}}
-        transition={{duration: 0.3}}
+        initial={{ x: '-100vw' }}
+        animate={{ x: 0 }}
+        exit={{x: '100vw'}}
       >
         <div className='modal-close-btn'> 
           <AiOutlineClose 
@@ -109,9 +108,6 @@ const ModalViewOrder = ({orderItem, closeModal}) => {
           <div className='modal-footer-item'> 
             <FaUtensils fontSize='1.7rem'/>
             <p>{orderItem.utensils > 0 ? `${orderItem.utensils} sets`: 'none'}</p>
-          </div>
-          <div className='modal-btn'> 
-            <Button text='Go Back' color='crimson' onClick={closeModal}/>
           </div>
         </div>
       </motion.div>
